@@ -1,19 +1,22 @@
 pipeline {
-    agent any 
+    agent any
+    tools {
+    	maven 'maven 384'
+	}
     stages {
-        stage('Build') { 
+        stage('Compile') { 
             steps {
-                // 
+                sh 'cd SparkWordCount && mvn clean compile'
             }
         }
-        stage('Test') { 
+        stage('Unit Test') { 
             steps {
-                // 
+                sh 'cd SparkWordCount && mvn clean test' 
             }
         }
-        stage('Deploy') { 
+        stage('Package') { 
             steps {
-                // 
+                sh 'cd SparkWordCount && mvn clean package'
             }
         }
     }
