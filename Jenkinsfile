@@ -1,43 +1,40 @@
 pipeline {
     agent any
-    
     tools {
         maven 'maven384'
     }
-    
     environment {
         ITVERSITY = credentials('itversity')
     }
-
     stages {
         stage('Compile') { 
             steps {
-                sh 'cd SparkWordCount && mvn clean compile'
+                sh 'cd SparkWordCount && mvn clean compile' 
             }
         }
         stage('Unit Test') { 
             steps {
-                sh 'cd SparkWordCount mvn clean test'
+                sh 'cd SparkWordCount && mvn clean test'
             }
         }
         stage('Package') { 
             steps {
-                sh 'cd SparkWordCount mvn clean package'
+                sh 'cd SparkWordCount && mvn clean package'
             }
         }
         stage('Deploy') {
-            parellel {
+            parallel {
                 stage('gw02') {
                     steps {
-                    sh 'sshpass -p $ITVERSITY_PSW ssh $ITVERSITY_USR@gw02.itversity.com hostname'
+                        sh 'sshpass -p $ITVERSITY_PSW ssh $ITVERSITY_USR@gw02.itversity.com hostname'
                     }
                 }
                 stage('gw03') {
                     steps {
-                    sh 'sshpass -p $ITVERSITY_PSW ssh $ITVERSITY_USR@gw03.itversity.com hostname'
+                        sh 'sshpass -p $ITVERSITY_PSW ssh $ITVERSITY_USR@gw03.itversity.com hostname'
                     }
                 }
             }
-        }
+        }       
     }
 }
